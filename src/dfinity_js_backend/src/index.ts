@@ -1,12 +1,14 @@
 import { query, update, text, Record, StableBTreeMap, Variant, Vec, None, Some, Ok, Err, ic, Principal, Opt, nat64, Duration, Result, bool, Canister } from "azle";
 import { v4 as uuidv4 } from "uuid";
 
+// Define variant types for campaign status and messages
 const CampaignStatus = Variant({
     Active: text,
     Completed: text,
     Cancelled: text
 });
 
+// Define record types for campaign, campaign contribution, and user profile
 const Campaign = Record({
     id: text,
     title: text,
@@ -32,6 +34,7 @@ const UserProfile = Record({
     balance: nat64
 });
 
+// Define variant type for messages
 const Message = Variant({
     NotFound: text,
     InvalidPayload: text,
@@ -39,19 +42,22 @@ const Message = Variant({
     ContributionCompleted: text
 });
 
+// Define stable BTree maps for storing campaigns, contributions, and user profiles
 const campaignsStorage = StableBTreeMap(0, text, Campaign);
 const contributionsStorage = StableBTreeMap(1, text, Vec(CampaignContribution));
 const userProfiles = StableBTreeMap(2, Principal, UserProfile);
 
+// Export Canister object with various functions
 export default Canister({
     
+    // Function to register a new user with a given name and initial balance
     registerUser: update([text, nat64], Result(text, Message), (name, initialBalance) => {
         const userPrincipal = ic.caller();
     
         // Check if user already exists
-        // if (userProfiles.get(userPrincipal)) {
-        //     return Err({ InvalidPayload: "User is already registered" });
-        // }
+        if (userProfiles.get(userPrincipal)) {
+            return Err({ InvalidPayload: "User is already registered" });
+        }
     
         // Register the user
         const userProfile = {
@@ -64,7 +70,7 @@ export default Canister({
         return Ok(`User ${name} registered successfully with principal ${userPrincipal.toText()} and initial balance ${initialBalance}`);
     }),
     
-
+    // Function to create a new campaign with given details
     createCampaign: update([text, text, nat64, nat64], Result(text, Message), async (title, description, targetAmount, endDate) => {
         const campaignId = uuidv4();
         const beneficiary = ic.caller(); // The creator of the campaign is automatically set as the beneficiary
@@ -87,6 +93,7 @@ export default Canister({
         return Ok(campaignId);
     }),
 
+    // Function to allow a user to contribute to a campaign
     contributeToCampaign: update([text, nat64], Result(text, Message), async (campaignId, amount) => {
         const userOpt = userProfiles.get(ic.caller());
         if ("None" in userOpt) {
@@ -103,10 +110,6 @@ export default Canister({
         if (campaign.status.Active !== "ACTIVE") {
             return Err({ InvalidPayload: `Campaign ${campaignId} is not active` });
         }
-    
-        // if (ic.time() > campaign.endDate) {
-        //     return Err({ InvalidPayload: `Campaign ${campaignId} has ended` });
-        // }
     
         const user = userOpt.Some;
         if (user.balance < amount) {
@@ -141,15 +144,17 @@ export default Canister({
         return Ok(`Contribution of ${amount} ICP to campaign ${campaignId} successful.`);
     }),
         
-
+    // Function to retrieve all campaigns
     getCampaigns: query([], Vec(Campaign), () => {
         return campaignsStorage.values();
     }),
 
+    // Function to retrieve contributions for a specific campaign
     getCampaignContributions: query([text], Vec(CampaignContribution), (campaignId) => {
         return contributionsStorage.get(campaignId).Some;
     }),
 
+    // Function to close a campaign
 	closeCampaign: update([text], Result(text, Message), async (campaignId) => {
         const campaignOpt = campaignsStorage.get(campaignId);
         if ("None" in campaignOpt) {
@@ -187,6 +192,7 @@ export default Canister({
         return Ok(`Campaign ${campaignId} closed successfully.`);
     }),
 
+    // Function to update an existing campaign
     updateCampaign: update([text, text,text, nat64, nat64], Result(text, Message), async (campaignId, title, description, targetAmount, endDate) => {
         const campaignOpt = campaignsStorage.get(campaignId);
         if ("None" in campaignOpt) {
@@ -209,6 +215,7 @@ export default Canister({
         return Ok(`Campaign ${campaignId} updated successfully.`);
     }),
 
+    // Function to search for campaigns based on keyword
     searchCampaigns: query([text], Vec(Campaign), (keyword) => {
         const campaigns = campaignsStorage.values();
         return campaigns.filter(campaign =>
@@ -218,6 +225,7 @@ export default Canister({
         );
     }),
 
+    // Function to retrieve campaign statistics
     getCampaignStatistics: query([text], Record({
         totalAmountRaised: nat64,
         numberOfContributors: nat64,
