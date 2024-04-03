@@ -1,0 +1,11 @@
+service: () -> {
+    closeCampaign: (text) -> (variant {Ok:text; Err:variant {InvalidPayload:text; NotFound:text; ContributionFailed:text; ContributionCompleted:text}});
+    contributeToCampaign: (text, nat64) -> (variant {Ok:text; Err:variant {InvalidPayload:text; NotFound:text; ContributionFailed:text; ContributionCompleted:text}});
+    createCampaign: (text, text, nat64, nat64) -> (variant {Ok:text; Err:variant {InvalidPayload:text; NotFound:text; ContributionFailed:text; ContributionCompleted:text}});
+    getCampaignContributions: (text) -> (vec record {campaignId:text; timestamp:nat64; amount:nat64; contributor:principal}) query;
+    getCampaignStatistics: (text) -> (record {totalAmountRaised:nat64; averageContribution:nat64; numberOfContributors:nat64}) query;
+    getCampaigns: () -> (vec record {id:text; status:variant {Active:text; Cancelled:text; Completed:text}; title:text; endDate:nat64; beneficiary:principal; description:text; creationDate:nat64; targetAmount:nat64; currentAmount:nat64}) query;
+    registerUser: (text, nat64) -> (variant {Ok:text; Err:variant {InvalidPayload:text; NotFound:text; ContributionFailed:text; ContributionCompleted:text}});
+    searchCampaigns: (text) -> (vec record {id:text; status:variant {Active:text; Cancelled:text; Completed:text}; title:text; endDate:nat64; beneficiary:principal; description:text; creationDate:nat64; targetAmount:nat64; currentAmount:nat64}) query;
+    updateCampaign: (text, text, text, nat64, nat64) -> (variant {Ok:text; Err:variant {InvalidPayload:text; NotFound:text; ContributionFailed:text; ContributionCompleted:text}});
+}
