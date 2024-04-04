@@ -45,14 +45,22 @@ export default function CampaignCard({ campaign }) {
     .then(async (confirmClose) => {
       if (confirmClose) {
         try {
-          const response = await closeCampaign(BigInt(campaign.id));
-          console.log(response)
-          setMessage(response.Ok);
-          swal('Success', response.Ok, 'success');
+          const response = await closeCampaign(campaign.id);
+          if(response.Ok){
+            toast.success('Campaign closed!',{
+              position: toast.POSITION.TOP_RIGHT,
+            });
+           }
+           else{
+              toast.error(`failed to close campaign!, ${response.Err.InvalidPayload} `,{
+                position: toast.POSITION.TOP_RIGHT,
+              });
+           }
         } catch (error) {
-          console.log(response)
-          // setMessage(error.message);
-          // swal('Error', error.message, 'error');
+          console.log(error)
+          toast.error('An error occurs',{
+            position: toast.POSITION.TOP_RIGHT,
+          });
         }
       }
     });
