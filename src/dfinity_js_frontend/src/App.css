@@ -1,3 +1,6 @@
+body{
+  background-color: floralwhite;
+}
 .cover {
   background-image: radial-gradient( circle farthest-corner at 10% 20%,
   #35D07F 0%, #2aa666 47.7%, #207d4c 92.3% );
