@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { createCampaign } from '../../utils/marketplace';
+import { toast } from 'react-toastify';
 
 export default function CreateCampaignForm() {
   const [campaignData, setCampaignData] = useState({ title: '', description: '', targetAmount: '', endDate: '' });
@@ -17,13 +18,22 @@ export default function CreateCampaignForm() {
 
   const handleCreateCampaign = async () => {
     try {
-        console.log(0,campaignData)
       const response = await createCampaign(
         campaignData.title,campaignData.description,
         BigInt(campaignData.targetAmount),BigInt(campaignData.endDate));
-      console.log(1,response);
+        if (response.Ok) {
+            toast.success(`Campaign created successfully!'`, {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+          } else {
+            toast.error(`Campaign creation failed! `, {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+          }
     } catch (error) {
-      console.log(2,error);
+        toast.error(`An error occurs `, {
+            position: toast.POSITION.TOP_RIGHT,
+        });
     }
   };
 

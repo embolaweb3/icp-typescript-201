@@ -48,7 +48,7 @@ export default function CampaignCard({ campaign }) {
       .then(async (confirmClose) => {
         if (confirmClose) {
           try {
-            const response = await closeCampaign(campaign.id);
+            const response = await closeCampaign(campaignId);
             if (response.Ok) {
               toast.success('Campaign closed!', {
                 position: toast.POSITION.TOP_RIGHT,
