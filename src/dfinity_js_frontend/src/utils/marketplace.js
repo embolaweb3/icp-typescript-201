@@ -38,8 +38,8 @@ export async function closeCampaign(campaignId) {
 }
 
 // Function to update an existing campaign
-export async function updateCampaign(campaignId) {
-  return window.canister.marketplace.updateCampaign(campaignId);
+export async function updateCampaign(campaignId,title,description,targetAmount,endDate) {
+  return window.canister.marketplace.updateCampaign(campaignId,title,description,targetAmount,endDate);
 }
 
 // Function to search for campaigns based on keyword
