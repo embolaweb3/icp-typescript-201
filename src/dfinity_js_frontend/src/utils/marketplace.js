@@ -9,8 +9,8 @@ export async function registerUser(name,initialBalance) {
 }
 
 // Function to create a new campaign
-export async function createCampaign(campaignInfo) {
-  return window.canister.marketplace.createCampaign(campaignInfo);
+export async function createCampaign(title,description,amount,endDate) {
+  return window.canister.marketplace.createCampaign(title,description,amount,endDate);
 }
 
 // Function to contribute to a campaign

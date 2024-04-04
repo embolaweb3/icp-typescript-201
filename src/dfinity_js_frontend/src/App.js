@@ -10,6 +10,7 @@ import Cover from "./components/utils/Cover";
 import { Notification } from "./components/utils/Notifications";
 import RegisterUserForm from "./components/marketplace/RegisterUser";
 import Campaigns from "./components/marketplace/Campaigns";
+import CreateCampaignForm from "./components/marketplace/CreateCampaign";
 
 
 const App = function AppWrapper() {
@@ -44,7 +45,15 @@ const App = function AppWrapper() {
                             />
                         </Nav.Item>
                     </Nav>
-                  <RegisterUserForm />
+                    <Row>
+                        <Col md={6}>
+                            <RegisterUserForm />
+                        </Col>
+                        <Col md={6}>
+                            <CreateCampaignForm />
+                        </Col>
+                    </Row>
+
                   <Campaigns />
                 </Container>
             ) : (
