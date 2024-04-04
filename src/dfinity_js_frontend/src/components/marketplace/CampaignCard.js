@@ -7,6 +7,7 @@ export default function CampaignCard({ campaign }) {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showContributeModal, setShowContributeModal] = useState(false);
   const [showStatisticsModal, setShowStatisticsModal] = useState(false);
+  const [campaignStatistics, setCampaignStatistics] = useState(null);
   const [campaignId, setCampaignId] = useState(campaign.id);
   const [title, setTitle] = useState(campaign.title);
   const [description, setDescription] = useState(campaign.description);
@@ -92,9 +93,12 @@ export default function CampaignCard({ campaign }) {
   const handleShowStatistics = async () => {
     try {
       const response = await getCampaignStatistics(campaignId);
+      console.log(response)
+      setCampaignStatistics(response);
+      setShowStatisticsModal(true);
       // Handle the response accordingly
     } catch (error) {
-      // Handle error
+     console.log(error)
     }
   };
 
@@ -174,6 +178,7 @@ export default function CampaignCard({ campaign }) {
         </div>
       )}
 
+    
       {/* Statistics Modal */}
       {showStatisticsModal && (
         <div className="modal show" style={{ display: 'block' }}>
@@ -184,7 +189,15 @@ export default function CampaignCard({ campaign }) {
                 <button type="button" className="btn-close" onClick={() => setShowStatisticsModal(false)}></button>
               </div>
               <div className="modal-body">
-                {/* Display campaign statistics */}
+                {campaignStatistics ? (
+                  <div>
+                    <p>Total Amount Raised:  <span className="badge bg-success text-dark">{Number(campaignStatistics.totalAmountRaised)}</span></p>
+                    <p>Number of Contributors:  <span className="badge bg-info text-dark">{Number(campaignStatistics.numberOfContributors)}</span></p>
+                    <p>Average Contribution:  <span className="badge bg-primary">{Number(campaignStatistics.averageContribution)}</span> </p>
+                  </div>
+                ) : (
+                  <p>Loading statistics...</p>
+                )}
                 <button onClick={() => setShowStatisticsModal(false)} className="btn btn-secondary m-2">Close</button>
               </div>
             </div>

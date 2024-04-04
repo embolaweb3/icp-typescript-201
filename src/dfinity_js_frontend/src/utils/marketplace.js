@@ -48,8 +48,8 @@ export async function searchCampaigns(keyword) {
 }
 
 // Function to retrieve campaign statistics
-export async function getCampaignStatistics() {
-  return window.canister.marketplace.getCampaignStatistics();
+export async function getCampaignStatistics(campaignId) {
+  return window.canister.marketplace.getCampaignStatistics(campaignId);
 }
 
 // Function to retrieve contributions for a specific campaign
