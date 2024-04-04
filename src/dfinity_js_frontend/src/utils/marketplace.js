@@ -14,8 +14,8 @@ export async function createCampaign(title,description,amount,endDate) {
 }
 
 // Function to contribute to a campaign
-export async function contributeToCampaign(data) {
-  return window.canister.marketplace.contributeToCampaign(data);
+export async function contributeToCampaign(id,amount) {
+  return window.canister.marketplace.contributeToCampaign(id,amount);
 }
 
 // Function to retrieve all campaigns

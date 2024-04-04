@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createCampaign } from '../../utils/marketplace';
 
 export default function CreateCampaignForm() {
-  const [campaignData, setCampaignData] = useState({ title: '', description: '', targetAmount: 0, endDate: 0 });
+  const [campaignData, setCampaignData] = useState({ title: '', description: '', targetAmount: '', endDate: '' });
   const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
@@ -63,9 +63,9 @@ export default function CreateCampaignForm() {
       <input 
         type="date" 
         name="endDate" 
-        value={campaignData.endDate} 
+       
         onChange={handleChange} 
-        placeholder="End Date" 
+        placeholder="End Date"
         className="form-control mb-2" 
       />
       <button onClick={handleCreateCampaign} className="btn btn-primary mr-2">Create</button>

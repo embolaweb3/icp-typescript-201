@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from "react";
-import { Container, Nav } from "react-bootstrap";
+import { Container, Nav,Row,Col } from "react-bootstrap";
 import "./App.css";
 import './styles/tailwind.css'
 import Wallet from "./components/Wallet";
@@ -49,7 +49,7 @@ const App = function AppWrapper() {
                         <Col md={6}>
                             <RegisterUserForm />
                         </Col>
-                        <Col md={6}>
+                        <Col md={6} className="shadow p-2">
                             <CreateCampaignForm />
                         </Col>
                     </Row>

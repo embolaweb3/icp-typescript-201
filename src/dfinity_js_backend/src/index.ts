@@ -55,9 +55,9 @@ export default Canister({
         const userPrincipal = ic.caller();
     
         // Check if user already exists
-        if (userProfiles.get(userPrincipal)) {
-            return Err({ InvalidPayload: "User is already registered" });
-        }
+        // if (userProfiles.get(userPrincipal)) {
+        //     return Err({ InvalidPayload: "User is already registered" });
+        // }
     
         // Register the user
         const userProfile = {

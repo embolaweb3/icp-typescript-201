@@ -1,33 +1,35 @@
 import React, { useState } from 'react';
-import { updateCampaign, closeCampaign } from '../../utils/marketplace';
+import { updateCampaign, closeCampaign, contributeToCampaign, getCampaignStatistics } from '../../utils/marketplace';
 import swal from 'sweetalert';
 import { toast } from 'react-toastify';
 
 export default function CampaignCard({ campaign }) {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showContributeModal, setShowContributeModal] = useState(false);
+  const [showStatisticsModal, setShowStatisticsModal] = useState(false);
   const [campaignId, setCampaignId] = useState(campaign.id);
   const [title, setTitle] = useState(campaign.title);
   const [description, setDescription] = useState(campaign.description);
   const [targetAmount, setTargetAmount] = useState(campaign.targetAmount);
+  const [contributionAmount, setContributionAmount] = useState('');
   const [endDate, setEndDate] = useState(campaign.endDate);
   const [message, setMessage] = useState('');
 
   const handleUpdateCampaign = async () => {
     try {
       const response = await updateCampaign(campaignId, title, description, BigInt(targetAmount), BigInt(endDate));
-      if(response.Ok){
-        toast.success('Campaign Updated!',{
+      if (response.Ok) {
+        toast.success('Campaign Updated!', {
           position: toast.POSITION.TOP_RIGHT,
         });
-       }
-       else{
-          toast.error(`Update failed!, ${response.Err.InvalidPayload} `,{
-            position: toast.POSITION.TOP_RIGHT,
-          });
-       }
+      } else {
+        toast.error(`Update failed!, ${response.Err.InvalidPayload} `, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
       setShowUpdateModal(false); // Close the modal after successful update
     } catch (error) {
-      toast.error('An error occurs',{
+      toast.error('An error occurs', {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
@@ -42,38 +44,70 @@ export default function CampaignCard({ campaign }) {
       buttons: true,
       dangerMode: true,
     })
-    .then(async (confirmClose) => {
-      if (confirmClose) {
-        try {
-          const response = await closeCampaign(campaign.id);
-          if(response.Ok){
-            toast.success('Campaign closed!',{
-              position: toast.POSITION.TOP_RIGHT,
-            });
-           }
-           else{
-              toast.error(`failed to close campaign!, ${response.Err.InvalidPayload} `,{
+      .then(async (confirmClose) => {
+        if (confirmClose) {
+          try {
+            const response = await closeCampaign(campaign.id);
+            if (response.Ok) {
+              toast.success('Campaign closed!', {
                 position: toast.POSITION.TOP_RIGHT,
               });
-           }
-        } catch (error) {
-          console.log(error)
-          toast.error('An error occurs',{
-            position: toast.POSITION.TOP_RIGHT,
-          });
+            } else {
+              toast.error(`failed to close campaign!, ${response.Err.InvalidPayload} `, {
+                position: toast.POSITION.TOP_RIGHT,
+              });
+            }
+          } catch (error) {
+            console.log(error)
+            toast.error('An error occurs', {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+          }
         }
+      });
+  };
+
+  const handleContributeToCampaign = async () => {
+    try {
+      const response = await contributeToCampaign(campaignId,BigInt(contributionAmount));
+      if (response.Ok) {
+        toast.success(`Contributed ${contributionAmount} ICP successfully!'`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setShowUpdateModal(false)
+      } else {
+        console.log(response)
+        toast.error(`Contribution failed!, ${response.Err.InvalidPayload} `, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       }
-    });
+    } catch (error) {
+      toast.error('An error occurs', {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
+   
+  };
+
+  const handleShowStatistics = async () => {
+    try {
+      const response = await getCampaignStatistics(campaignId);
+      // Handle the response accordingly
+    } catch (error) {
+      // Handle error
+    }
   };
 
   return (
     <div className="border border-primary rounded-md p-4 mb-4">
       <h2 className="text-xl font-semibold mb-2">{campaign.title}</h2>
       <p className="mb-2">{campaign.description}</p>
-      <p className="mb-2">Target Amount: {Number(campaign.targetAmount)}</p>
-      <p className="mb-2">Current Amount: {Number(campaign.currentAmount)}</p>
+      <p className="mb-2">Target Amount:  <span className="badge bg-warning text-dark">{Number(campaign.targetAmount)}</span></p>
+      <p className="mb-2">Current Amount:  <span className="badge bg-success">{Number(campaign.currentAmount)}</span></p>
       <button onClick={() => setShowUpdateModal(true)} className="btn btn-primary m-2">Update Campaign</button>
       <button onClick={handleCloseCampaign} className="btn btn-danger m-2">Close Campaign</button>
+      <button onClick={() => setShowContributeModal(true)} className="btn btn-success m-2">Contribute</button>
+      <button onClick={handleShowStatistics} className="btn btn-info m-2">Show Statistics</button>
 
       {/* Update Campaign Modal */}
       {showUpdateModal && (
@@ -107,6 +141,51 @@ export default function CampaignCard({ campaign }) {
                 </div>
                 <button onClick={handleUpdateCampaign} className="btn btn-primary m-2">Update</button>
                 <button onClick={() => setShowUpdateModal(false)} className="btn btn-secondary m-2">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Contribute Modal */}
+      {showContributeModal && (
+        <div className="modal show" style={{ display: 'block' }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Contribute to Campaign</h5>
+                <button type="button" className="btn-close" onClick={() => setShowContributeModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                {/* Contribute form */}
+                <div className="form-group">
+                  <label htmlFor="campaignId">Campaign ID:</label>
+                  <input type="text"readOnly className="form-control" id="campaignId" value={campaignId} onChange={(e) => setCampaignId(e.target.value)} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="targetAmount">Contribution Amount:</label>
+                  <input type="text" className="form-control" id="Amount" onChange={(e) => setContributionAmount(e.target.value)} />
+                </div>
+                <button onClick={handleContributeToCampaign} className="btn btn-primary m-2">Contribute</button>
+                <button onClick={() => setShowContributeModal(false)} className="btn btn-secondary m-2">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Statistics Modal */}
+      {showStatisticsModal && (
+        <div className="modal show" style={{ display: 'block' }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Campaign Statistics</h5>
+                <button type="button" className="btn-close" onClick={() => setShowStatisticsModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                {/* Display campaign statistics */}
+                <button onClick={() => setShowStatisticsModal(false)} className="btn btn-secondary m-2">Close</button>
               </div>
             </div>
           </div>
