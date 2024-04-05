@@ -147,7 +147,7 @@ export default function CampaignCard({ campaign }) {
       <button onClick={() => setShowContributeModal(true)} className="btn btn-success m-2">Contribute</button>
       <button onClick={handleShowStatistics} className="btn btn-info m-2">Show Statistics</button>
 
-      // Update Campaign Modal
+      {/* // Update Campaign Modal */}
 {showUpdateModal && (
   <div className="modal show" style={{ display: 'block' }}>
     <div className="modal-dialog">
@@ -185,7 +185,7 @@ export default function CampaignCard({ campaign }) {
   </div>
 )}
 
-// Contribute Modal
+{/* // Contribute Modal */}
 {showContributeModal && (
   <div className="modal show" style={{ display: 'block' }}>
     <div className="modal-dialog">
@@ -211,7 +211,7 @@ export default function CampaignCard({ campaign }) {
   </div>
 )}
 
-// Statistics Modal
+{/* // Statistics Modal */}
 {showStatisticsModal && (
   <div className="modal show" style={{ display: 'block' }}>
     <div className="modal-dialog">
