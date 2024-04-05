@@ -72,6 +72,11 @@ export default Canister({
     
     // Function to create a new campaign with given details
     createCampaign: update([text, text, nat64, nat64], Result(text, Message), async (title, description, targetAmount, endDate) => {
+        const userOpt = userProfiles.get(ic.caller());
+        if ("None" in userOpt) {
+            return Err({ NotFound: `User not found` });
+        }
+        
         const campaignId = uuidv4();
         const beneficiary = ic.caller(); // The creator of the campaign is automatically set as the beneficiary
         const creationDate = ic.time();

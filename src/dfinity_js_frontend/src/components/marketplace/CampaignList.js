@@ -2,7 +2,9 @@ import React from 'react';
 
 import CampaignCard from './CampaignCard';
 
+// CampaignList component definition
 export default function CampaignList({ campaigns }) {
+  // Return JSX for rendering the list of campaigns
   return (
     <div>
         <div className='row justify-content-center align-items-center'>

@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { registerUser } from '../../utils/marketplace';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast from react-toastify
+import 'react-toastify/dist/ReactToastify.css'; // Import default styles for react-toastify
 
+// RegisterUserForm component definition
 export default function RegisterUserForm() {
+  // State variable to manage user data
   const [userData, setUserData] = useState({ name: '', initialBalance: '' });
 
+  // Function to handle user registration
   const handleRegisterUser = async () => {
     try {
        const response = await registerUser(userData.name, BigInt(userData.initialBalance));
@@ -27,6 +30,7 @@ export default function RegisterUserForm() {
     }
   };
 
+  // Return JSX for rendering the RegisterUserForm component
   return (
     <div className='row justify-content-center'>
       <div className='col-md-6 p-3 shadow'>
@@ -47,7 +51,6 @@ export default function RegisterUserForm() {
         />
         <button onClick={handleRegisterUser} className="btn btn-primary mr-2">Submit</button>
       </div>
-      
     </div>
   );
 }
